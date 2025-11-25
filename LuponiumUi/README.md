@@ -1,58 +1,79 @@
+# **LuponiumUi (V1.0.0)**
+> [!IMPORTANT] 
+> **This is built for Streamer.bot 1.0.1 and newer. Ensure you update before trying to use this.**
 
-# LuponiumUi
+To use this Streamer.bot Dll Extension, ensure it's downloaded into the following folder:
+```
+Streamer.bot\dlls
+```
 
-Some small and simple methods to help with Streamer.bot C# Coding.
 
+# **For Extension Development**
+> [!NOTE]
+> This section is for people who want to utilize the dll for making their own Config Forms with the Luponium dll.
 
+Supports the following:
+- Add Text
+- Add Blank Line
+- Add Number Box
+- Add Checkbox Button
+- Add Custom Buttons
+- Add Dropdown list
+- Hover Tooltips
 
+> [!IMPORTANT]  
+> If using this for your own projects, ensure a Streamer.bot Execute C# Method function calls a bool to the ShowConfigForm method and is to run on the UI Thread.
 
-## Using LuponiumUi
-You will need to download the LuponiumUi.dll into your Streamer.bot dlls folder, located in Streamer.bot install folder. If one doesn't exist, create one.
-
-Create a new C# Action, default looks like so:
-```csharp
+## Streamer.Bot "Execute C# Code" Example 
+```cs
 using System;
+using LuponiumUi;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using System.Linq;
 
 public class CPHInline
 {
+    // Dictionary required to save user input to, can be used across this Execute C# Code action.
+	public Dictionary<string,object> configSettings = new();
+
 	public bool Execute()
-	{
-		// your main code goes here
-		return true;
-	}
+    {
+        // your main code goes here
+        return true;
+    }
+
+	// Show the Config form
+	// Call this method using a "C# Execute Code Method" Action with "Run on UI Thread" Enabled
+	public bool ShowConfigForm()
+    {
+        LuponiumForm configForm = ConfigForm();
+
+        if (configForm.ShowDialog() == DialogResult.OK)
+        {
+            configSettings = configForm.ResultValues;
+			// Save Dictionary to a Global Variable, this saves as a string in Streamer.bot
+			// When getting the saved Config Values, get it as a Dictionary<string,object>
+            CPH.SetGlobalVar("GlobalVariableName", configSettings, true);
+            return true;
+        }
+        return false;
+    }
+
+	// Build the Config Form to get User Input
+    public LuponiumForm ConfigForm()
+    {
+        var configForm = new LuponiumForm(string title, int width, int height, int maxWidth, int maxHeight, string okText = "Save", string cancelText = "Cancel");
+        // All methods below have overloads, feel free to use them in your own projects
+        configForm.AddDropdown(string label, IEnumerable<string> options, string defaultSelected = null, string hint = "", bool required = false, Func<string, bool> validate = null, string key = null);
+        configForm.AddCheckbox(string label, bool defaultValue = false, string hint = "", bool required = false, Func<bool, bool> validate = null, string key = null);
+        configForm.AddNumber(string label, decimal value = 0, decimal min = 0, decimal max = 100, string hint = "", bool required = false, Func<decimal, bool> validate = null, string key = null);
+        configForm.AddPasswordBox(string label, string hint = "", bool required = false, Func<string, bool> validate = null, string key = null);
+        configForm.AddTextbox(string label, string defaultValue = "", string hint = "", bool required = false, Func<string, bool> validate = null, string key = null);
+        configForm.AddBlankLine(int height = 10);
+        return configForm;
+    }
 }
 ```
 
-You can then add `using LuponiumUi` below the `using System`. This will allow you to start using any custom methods included.
-
-## CPHExtensionMethods
-I've included some useful methods to use that are not default within Streamer.Bot, You can use these with or without the dll.
-
-### Emote List Extensions
-Streamer.bot will give an argument on specific triggers which contains emotes, usually under Chat Message but other triggers give it too. If you want to check that a specific Emote is used in a chat message, you have the following options:
-```csharp
-using System;
-using Twitch.Common.Models; // Required to use the emoteList argument
-using System.Collections.Generic; // Required to use the emoteList argument
-using LuponiumUi; // Custom Dll with Methods
-
-public class CPHInline
-{
-	public bool Execute()
-	{
-		// Get the Emotes argument with the following CPH method
-		CPH.TryGetArg("emotes", out List<Twitch.Common.Models.Emote> emoteList);
-
-		// Would recommend getting this arg (internal)
-		// That way the C# action won't run off your own or your bots chat messages
-		CPH.TryGetArg("internal", out bool IsInternal); 
-
-		// All methods used below return a bool (true/false)
-		emoteList.AnyNameStartsWith("lupos");
-		emoteList.ListContains("NoU");
-		emoteList.MatchesStringPartial("pride");
-		return true;
-	}
-}
-```
 
