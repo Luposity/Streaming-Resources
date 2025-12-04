@@ -14,6 +14,7 @@
 <details>
 <summary>Config Forms</summary>
 
+
 >[!NOTE]
 > **This requires atleast some knowledge of C#.**
 
@@ -37,7 +38,7 @@ You can add as many of these into the form as you like.
 
 ```cs
 using System;
-using LuponiumUi;
+using Luponium;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using System.Linq;
@@ -57,7 +58,7 @@ public class CPHInline
 	// Call this method using a "C# Execute Code Method" Action with "Run on UI Thread" Enabled
 	public bool ShowConfigForm()
     {
-        LuponiumForm configForm = ConfigForm();
+        CPHConfigForm configForm = ConfigForm();
 
         if (configForm.ShowDialog() == DialogResult.OK)
         {
@@ -71,9 +72,9 @@ public class CPHInline
     }
 
 	// Build the Config Form to get User Input
-    public LuponiumForm ConfigForm()
+    public CPHConfigForm ConfigForm()
     {
-        var configForm = new LuponiumForm(string title, int width, int height, int maxWidth, int maxHeight, string okText = "Save", string cancelText = "Cancel");
+        var configForm = new CPHConfigForm(string title, int width, int height, int maxWidth, int maxHeight, string okText = "Save", string cancelText = "Cancel");
         // All methods below have overloads, feel free to use them in your own projects
         configForm.AddDropdown(string label, IEnumerable<string> options, string defaultSelected = null, string hint = "", bool required = false, Func<string, bool> validate = null, string key = null);
         configForm.AddCheckbox(string label, bool defaultValue = false, string hint = "", bool required = false, Func<bool, bool> validate = null, string key = null);
