@@ -11,14 +11,15 @@
 >```
 
 ## Luponium Features
+
+>[!NOTE]
+> - **This requires atleast some knowledge of C#.**
+
 <details>
 <summary>Config Forms</summary>
 
 This dll extension allows people who make public Streamer.bot resources to create Config Forms within the Streamer.bot UI.<br>
 The concept came from having a lot of "Set Argument" actions within some public Streamer.bot Extensions I've seen.
-
->[!NOTE]
-> - **This requires atleast some knowledge of C#.**
 
 Creating a Config Form using the Dll allows you to use the following:
 
